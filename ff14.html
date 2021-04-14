@@ -1,0 +1,642 @@
+<html>
+
+<head></head>
+<style>
+    html,
+    body,
+    div,
+    span,
+    applet,
+    object,
+    iframe,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    blockquote,
+    pre,
+    a,
+    abbr,
+    acronym,
+    address,
+    big,
+    cite,
+    code,
+    del,
+    dfn,
+    em,
+    img,
+    ins,
+    kbd,
+    q,
+    s,
+    samp,
+    small,
+    strike,
+    strong,
+    sub,
+    sup,
+    tt,
+    var,
+    b,
+    u,
+    i,
+    center,
+    dl,
+    dt,
+    dd,
+    ol,
+    ul,
+    li,
+    fieldset,
+    form,
+    label,
+    legend,
+    table,
+    caption,
+    tbody,
+    tfoot,
+    thead,
+    tr,
+    th,
+    td,
+    article,
+    aside,
+    canvas,
+    details,
+    embed,
+    figure,
+    figcaption,
+    footer,
+    header,
+    hgroup,
+    menu,
+    nav,
+    output,
+    ruby,
+    section,
+    summary,
+    time,
+    mark,
+    audio,
+    video {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        font-size: 100%;
+        font: inherit;
+        vertical-align: baseline;
+    }
+
+    /* HTML5 display-role reset for older browsers */
+    article,
+    aside,
+    details,
+    figcaption,
+    figure,
+    footer,
+    header,
+    hgroup,
+    menu,
+    nav,
+    section {
+        display: block;
+    }
+
+    body {
+        line-height: 1;
+    }
+
+    ol,
+    ul {
+        list-style: none;
+    }
+
+    blockquote,
+    q {
+        quotes: none;
+    }
+
+    blockquote:before,
+    blockquote:after,
+    q:before,
+    q:after {
+        content: '';
+        content: none;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+    * {
+        overflow: hidden;
+    }
+</style>
+<script>
+    const EORZEA_MULTIPLIER = 3600 / 175;
+    const CRAFT_LIST = [
+        {
+            "ETHour": 2,
+            "ItemName": "헤미타이트원석",
+            "Job": "MIN",
+            "AreaMain": "노르브란트",
+            "AreaSub": "멈춘물결"
+        },
+        {
+            "ETHour": 2,
+            "ItemName": "오사드매실",
+            "Job": "BTN",
+            "AreaMain": "동방",
+            "AreaSub": "여명의옥좌"
+        },
+        {
+            "ETHour": 2,
+            "ItemName": "루미스라이트광석",
+            "Job": "MIN",
+            "AreaMain": "이슈가르드",
+            "AreaSub": "하얀궁전"
+        },
+        {
+            "ETHour": 4,
+            "ItemName": "잠멜생강",
+            "Job": "BTN",
+            "AreaMain": "기라바니아",
+            "AreaSub": "포르타프리토리아"
+        },
+        {
+            "ETHour": 4,
+            "ItemName": "금운모",
+            "Job": "MIN",
+            "AreaMain": "이슈가르드",
+            "AreaSub": "구름마초처소"
+        },
+        {
+            "ETHour": 4,
+            "ItemName": "팔라듐광석",
+            "Job": "MIN",
+            "AreaMain": "동방",
+            "AreaSub": "열사암"
+        },
+        {
+            "ETHour": 6,
+            "ItemName": "제왕비취원석",
+            "Job": "MIN",
+            "AreaMain": "동방",
+            "AreaSub": "열사암"
+        },
+        {
+            "ETHour": 6,
+            "ItemName": "비자나무원목",
+            "Job": "BTN",
+            "AreaMain": "기라바니아",
+            "AreaSub": "포르타프리토리아"
+        },
+        {
+            "ETHour": 6,
+            "ItemName": "다이아스포어원석",
+            "Job": "MIN",
+            "AreaMain": "노르브란트",
+            "AreaSub": "볼레크도르프"
+        },
+        {
+            "ETHour": 8,
+            "ItemName": "노란포포토",
+            "Job": "BTN",
+            "AreaMain": "노르브란트",
+            "AreaSub": "모르크수크"
+        },
+        {
+            "ETHour": 8,
+            "ItemName": "장미휘석원석",
+            "Job": "MIN",
+            "AreaMain": "기라바니아",
+            "AreaSub": "알라가나"
+        },
+        {
+            "ETHour": 8,
+            "ItemName": "녹나무고목",
+            "Job": "BTN",
+            "AreaMain": "이슈가르드",
+            "AreaSub": "하얀궁전"
+        },
+        {
+            "ETHour": 10,
+            "ItemName": "복실딸기",
+            "Job": "BTN",
+            "AreaMain": "이슈가르드",
+            "AreaSub": "이딜샤이어"
+        },
+        {
+            "ETHour": 10,
+            "ItemName": "크롬철광",
+            "Job": "MIN",
+            "AreaMain": "기라바니아",
+            "AreaSub": "알라기리"
+        },
+        {
+            "ETHour": 10,
+            "ItemName": "흰떡갈나무가지",
+            "Job": "BTN",
+            "AreaMain": "노르브란트",
+            "AreaSub": "직공마을"
+        },
+        {
+            "ETHour": 12,
+            "ItemName": "남마풀",
+            "Job": "BTN",
+            "AreaMain": "동방",
+            "AreaSub": "여명의옥좌"
+        },
+        {
+            "ETHour": 12,
+            "ItemName": "트리플라이트원석",
+            "Job": "MIN",
+            "AreaMain": "노르브란트",
+            "AreaSub": "여행길여관"
+        },
+        {
+            "ETHour": 12,
+            "ItemName": "누에콩",
+            "Job": "BTN",
+            "AreaMain": "노르브란트",
+            "AreaSub": "리다란"
+        },
+        {
+            "ETHour": 14,
+            "ItemName": "헤미타이트원석",
+            "Job": "MIN",
+            "AreaMain": "노르브란트",
+            "AreaSub": "멈춘물결"
+        },
+        {
+            "ETHour": 14,
+            "ItemName": "오사드매실",
+            "Job": "BTN",
+            "AreaMain": "동방",
+            "AreaSub": "여명의옥좌"
+        },
+        {
+            "ETHour": 14,
+            "ItemName": "루미스라이트광석",
+            "Job": "MIN",
+            "AreaMain": "이슈가르드",
+            "AreaSub": "하얀궁전"
+        },
+        {
+            "ETHour": 16,
+            "ItemName": "금운모",
+            "Job": "MIN",
+            "AreaMain": "이슈가르드",
+            "AreaSub": "구름마초처소"
+        },
+        {
+            "ETHour": 16,
+            "ItemName": "잠멜생강",
+            "Job": "BTN",
+            "AreaMain": "기라바니아",
+            "AreaSub": "포르타프리토리아"
+        },
+        {
+            "ETHour": 16,
+            "ItemName": "팔라듐광석",
+            "Job": "MIN",
+            "AreaMain": "동방",
+            "AreaSub": "열사암"
+        },
+        {
+            "ETHour": 18,
+            "ItemName": "제왕비취원석",
+            "Job": "MIN",
+            "AreaMain": "동방",
+            "AreaSub": "열사암"
+        },
+        {
+            "ETHour": 18,
+            "ItemName": "비자나무원목",
+            "Job": "BTN",
+            "AreaMain": "기라바니아",
+            "AreaSub": "포르타프리토리아"
+        },
+        {
+            "ETHour": 18,
+            "ItemName": "다이아스포어원석",
+            "Job": "MIN",
+            "AreaMain": "노르브란트",
+            "AreaSub": "볼레크도르프"
+        },
+        {
+            "ETHour": 20,
+            "ItemName": "노란포포토",
+            "Job": "BTN",
+            "AreaMain": "노르브란트",
+            "AreaSub": "모르크수크"
+        },
+        {
+            "ETHour": 20,
+            "ItemName": "녹나무고목",
+            "Job": "BTN",
+            "AreaMain": "이슈가르드",
+            "AreaSub": "하얀궁전"
+        },
+        {
+            "ETHour": 20,
+            "ItemName": "장미휘석원석",
+            "Job": "MIN",
+            "AreaMain": "기라바니아",
+            "AreaSub": "알라가나"
+        },
+        {
+            "ETHour": 22,
+            "ItemName": "크롬철광",
+            "Job": "MIN",
+            "AreaMain": "기라바니아",
+            "AreaSub": "알라기리"
+        },
+        {
+            "ETHour": 22,
+            "ItemName": "복실딸기",
+            "Job": "BTN",
+            "AreaMain": "이슈가르드",
+            "AreaSub": "이딜샤이어"
+        },
+        {
+            "ETHour": 22,
+            "ItemName": "흰떡갈나무가지",
+            "Job": "BTN",
+            "AreaMain": "노르브란트",
+            "AreaSub": "직공마을"
+        },
+        {
+            "ETHour": 0,
+            "ItemName": "남마풀",
+            "Job": "BTN",
+            "AreaMain": "동방",
+            "AreaSub": "여명의옥좌"
+        },
+        {
+            "ETHour": 0,
+            "ItemName": "트리플라이트원석",
+            "Job": "MIN",
+            "AreaMain": "노르브란트",
+            "AreaSub": "여행길여관"
+        },
+        {
+            "ETHour": 0,
+            "ItemName": "누에콩",
+            "Job": "BTN",
+            "AreaMain": "노르브란트",
+            "AreaSub": "리다란"
+        }
+    ];
+
+    let currentHour;
+    let currentMinute;
+    let currentTimeDivList;
+    let nextTimeDivList;
+    let isChange = true;
+
+    window.onload = () => {
+
+        document.addEventListener("onOverlayDataUpdate", function (e) {
+        });
+
+        currentTimeDivList = document.querySelectorAll("#current-time-list .time-item");
+        nextTimeDivList = document.querySelectorAll("#next-time-list .time-item");
+
+        currentTimeDivList.forEach((currentTimeDiv) => {
+            currentTimeDiv.addEventListener("click", () => {
+                currentTimeDiv.querySelectorAll("div").forEach(element => {
+                    if(element.classList.contains("delete-font"))
+                        element.classList.remove("delete-font");
+                    else
+                        element.classList.add("delete-font");
+                });
+            });
+        });
+
+        refreshEorzeaTime();
+        if(isChange)
+            refreshCraftList();
+    }
+
+    setInterval(()=>
+    {
+        refreshEorzeaTime();
+        if(isChange)
+            refreshCraftList();
+    }, 1000);
+
+    function refreshCraftList() {
+        isChange = false;
+
+        let currentCraftList = [];
+        let nextCraftList = [];
+
+        let targetHour1 = 0;
+        let targetHour2 = 0;
+
+
+        if (currentHour % 2) {
+            targetHour1 = currentHour - 1;
+            targetHour2 = currentHour + 1;
+        }
+        else {
+            targetHour1 = currentHour;
+            targetHour2 = currentHour + 2;
+        }
+
+        if(targetHour2 == 24)
+            targetHour2 = 0;
+
+        for (let i = 0; i < CRAFT_LIST.length; i++) {
+            if (CRAFT_LIST[i].ETHour == targetHour1)
+                currentCraftList.push(CRAFT_LIST[i]);
+
+            if (CRAFT_LIST[i].ETHour == targetHour2)
+                nextCraftList.push(CRAFT_LIST[i]);
+        }
+
+        for (let i = 0; i < 3; i++) {
+            let tdDivList = currentTimeDivList[i].querySelectorAll("div");
+
+            tdDivList.forEach(element => {
+                element.classList.remove("delete-font");
+            })
+            tdDivList[0].innerText = zeroPadding(currentCraftList[i].ETHour, 2) + ":00";
+            tdDivList[1].innerText = currentCraftList[i].ItemName[0];
+
+            let srcText = "";
+            if (currentCraftList[i].Job == "MIN")
+                srcText = "https://docs.google.com/uc?export=open&id=1OgMcoDmn5rbjb9LlgpqRbR-nYKnhzGoU";
+            else
+                srcText = "https://docs.google.com/uc?export=open&id=1b1cwfI90Ygj2G_CSBxKN3xrMFEs4wDEU";
+
+            tdDivList[2].querySelector("img").src = srcText;
+            tdDivList[3].querySelectorAll("span")[0].innerText = currentCraftList[i].AreaMain;
+            tdDivList[3].querySelectorAll("span")[1].innerText = currentCraftList[i].AreaSub;
+        }
+
+        for (let i = 0; i < 1; i++) {
+            let tdDivList = nextTimeDivList[i].querySelectorAll("div");
+            tdDivList[0].innerText = zeroPadding(nextCraftList[i].ETHour, 2) + ":00";
+            tdDivList[1].innerText = nextCraftList[i].ItemName[0];
+
+            let srcText = "";
+            if (nextCraftList[i].Job == "MIN")
+                srcText = "https://docs.google.com/uc?export=open&id=1OgMcoDmn5rbjb9LlgpqRbR-nYKnhzGoU";
+            else
+                srcText = "https://docs.google.com/uc?export=open&id=1b1cwfI90Ygj2G_CSBxKN3xrMFEs4wDEU";
+
+            tdDivList[2].querySelector("img").src = srcText;
+            tdDivList[3].querySelectorAll("span")[0].innerText = nextCraftList[i].AreaMain;
+            tdDivList[3].querySelectorAll("span")[1].innerText = nextCraftList[i].AreaSub;
+        }
+    }
+
+    function refreshEorzeaTime() {
+        let utcTime = new Date().getTime();
+        let eorzeaTimestamp = Math.floor(utcTime * EORZEA_MULTIPLIER);
+        let eorzeaTime = new Date();
+        eorzeaTime.setTime(eorzeaTimestamp);
+
+        if (eorzeaTime.getUTCHours() != currentHour && eorzeaTime.getUTCHours() % 2 == 0)
+            isChange = true;
+
+        currentHour = eorzeaTime.getUTCHours();
+        currentMinute = eorzeaTime.getUTCMinutes();
+
+        let timeString = zeroPadding(currentHour, 2) + ":" + zeroPadding(currentMinute, 2);
+        document.querySelector("#current-time").innerText = timeString;
+    }
+
+    function zeroPadding(number, length) {
+        return (Array(length).join('0') + number).slice(-length);
+    }
+</script>
+<style>
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    .normal-font {
+        text-decoration: none;
+        color:white;
+    }
+
+    .delete-font {
+        text-decoration: line-through;
+        color:gray;
+    }
+
+    .header {
+        width: calc(100% - 16px);
+        background-color: #00000080;
+        padding: 8px;
+        display: inline-block;
+    }
+
+    .header .title {
+        font-size: 12px;
+        float: left;
+        color: #fff193;
+    }
+
+    .header .time {
+        font-size: 12px;
+        float: right;
+        color: lightgreen;
+        font-weight: 600;
+    }
+
+    .time-list {
+        width: 100%;
+        display: inline-block;
+    }
+
+    .time-item {
+        width: 100%;
+        margin-bottom: 2px;
+        float: left;
+        font-size: 12px;
+        cursor: pointer
+    }
+
+    .time-list .time-item div {
+        height: 30px;
+        line-height: 30px;
+        padding: 0 5px;
+        float: left;
+        text-align: center;
+    }
+
+    .time-list .time-item div:nth-child(1) {
+        width: 30px;
+    }
+
+    .time-list .time-item div:nth-child(2) {
+        width: 10px;
+    }
+
+    .time-list .time-item div:nth-child(2) {
+        width: 20px;
+    }
+
+    .time-list .time-item div:nth-child(3) img {
+        margin-top: 4px;
+    }
+
+    .time-list .time-item div:nth-child(4) {
+        width: calc(100% - 110px);
+        text-align: left;
+    }
+
+    .time-list .time-item div:nth-child(4) span:nth-child(1) {
+        font-weight: 600;
+    }
+
+</style>
+
+<body style="background-color:#00000030;color:white">
+    <div class="header">
+        <div class="title">5.3 황화작 타임라인</div>
+        <div class="time">ET <span id='current-time'>00:00</span></div>
+    </div>
+    <div class="time-list" id="current-time-list">
+        <div class="time-item">
+            <div>00:00</div>
+            <div></div>
+            <div><img src="" width=20 height=20></div>
+            <div><span></span> - <span></span></div>
+        </div>
+        <div class="time-item">
+            <div>00:00</div>
+            <div></div>
+            <div><img src="" width=20 height=20></div>
+            <div><span></span> - <span></span></div>
+        </div>
+        <div class="time-item">
+            <div>00:00</div>
+            <div></div>
+            <div><img src="" width=20 height=20></div>
+            <div><span></span> - <span></span></div>
+        </div>
+    </div>
+    <div class="header">
+        <div class="title">NEXT</div>
+    </div>
+    <div class="time-list" id="next-time-list">
+        <div class="time-item">
+            <div>00:00</div>
+            <div></div>
+            <div><img src="" width=20 height=20></div>
+            <div><span></span> - <span></span></div>
+        </div>
+    </div>
+</body>
+
+</html>
